@@ -1,20 +1,25 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const { ObjectID } = require('bson')
 const MongoClient = require('mongodb').MongoClient
+let db, collection;
 
-var db, collection;
+const url = process.env.MONGODB_URI
+const dbName = "thoughts";
 
-const url = "mongodb+srv://demo:demo@cluster0-q2ojb.mongodb.net/test?retryWrites=true";
-const dbName = "demo";
+MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
+    if (error) {
+        console.error('MongoDB connection failed:', error);
+        return;
+    }
 
-app.listen(3000, () => {
-    MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, (error, client) => {
-        if(error) {
-            throw error;
-        }
-        db = client.db(dbName);
-        console.log("Connected to `" + dbName + "`!");
+    db = client.db(dbName);
+    console.log("Connected to `" + dbName + "`!");
+
+    app.listen(3000, () => {
+        console.log('Server running on port 3000');
     });
 });
 
@@ -24,38 +29,50 @@ app.use(bodyParser.json())
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-  db.collection('messages').find().toArray((err, result) => {
+  db.collection('thoughts').find().toArray((err, result) => {
     if (err) return console.log(err)
-    res.render('index.ejs', {messages: result})
+    res.render('index.ejs', {thoughts: result})
   })
 })
 
-app.post('/messages', (req, res) => {
-  db.collection('messages').insertOne({name: req.body.name, msg: req.body.msg, thumbUp: 0, thumbDown:0}, (err, result) => {
+app.post('/thoughts', (req, res) => {
+  db.collection('thoughts').insertOne({
+    date: req.body.date || new Date().toISOString().split('T')[0],
+    feeling: req.body.feeling,
+    thought: req.body.thought
+  }, (err, result) => {
     if (err) return console.log(err)
-    console.log('saved to database')
+    console.log('Saved thought to Brain Drain')
     res.redirect('/')
   })
 })
 
-app.put('/messages', (req, res) => {
-  db.collection('messages')
-  .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
-    $set: {
-      thumbUp:req.body.thumbUp
-    }
-  }, {
-    sort: {_id: -1},
-    upsert: true
-  }, (err, result) => {
-    if (err) return res.send(err)
-    res.send(result)
+//UPDATE 
+app.put('/thoughts', (req, res) => {
+  db.collection('thoughts')
+  .findOneAndUpdate(
+    {_id: ObjectID(req.body.id)}, 
+    { 
+      $set: { 
+        date: req.body.date,
+        feeling: req.body.feeling, 
+        thought: req.body.thought
+      }
+    }, 
+    {
+      sort: { _id: -1}, 
+      upsert: true
+    }, (err, result) => {
+      if (err) return res.send(err)
+      res.send(result)
+    })
   })
-})
 
-app.delete('/messages', (req, res) => {
-  db.collection('messages').findOneAndDelete({name: req.body.name, msg: req.body.msg}, (err, result) => {
+app.delete('/thoughts', (req, res) => {
+  db.collection('thoughts').findOneAndDelete(
+    { _id: new ObjectId(req.body.id)}, 
+    (err, result) => {
     if (err) return res.send(500, err)
-    res.send('Message deleted!')
+    res.send('Thought cleared!')
   })
 })

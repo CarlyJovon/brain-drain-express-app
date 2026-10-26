@@ -2,39 +2,80 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>21 Savage Fans</title>
+  <title>Brain Drain</title>
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="stylesheet" href="font-awesome.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>21 Savage</h1>
-  <h2>Why you trappin so hard?</h2>
+  <h1>🧠Brain Drain🧠</h1>
+  <h2>Your Mind, No Filter.</h2>
+  <p>Drop your thoughts, free up some space.</p>
 
+  <!--CREATE FORM-->
+  <section class="form-section"> 
+    <h3>Drop a Thought</h3> 
+      <form action="/thoughts" method="POST">
 
-  <h3>Messages</h3>
-  <ul class="messages">
-  <% for(var i=0; i<messages.length; i++) {%>
-    <li class="message">
-      <span><%= messages[i].name %></span>
-      <span><%= messages[i].msg %></span>
-      <span><%= messages[i].thumbUp %></span>
-      <span><i class="fa fa-thumbs-up" aria-hidden="true"></i></span>
-      <span><i class="fa fa-thumbs-down" aria-hidden="true"></i></span>
-      <span><i class="fa fa-trash" aria-hidden="true"></i></span>
-    </li>
-  <% } %>
-  </ul>
+  <!--DATE INPUT-->
+        <div class="input-group">
+          <label for="date">Date:</label>
+          <input type="date" id="date" name="date" required> 
 
-  <h2>Add a message</h2>
+          <div class="input-group"> 
+            <textarea name="thought" placeholder="What's on your mind today?" rows="4" required></textarea>
+          </div>
 
-  <form action="/messages" method="POST">
-    <input type="text" placeholder="name" name="name">
-    <input type="text" placeholder="message" name="msg">
-    <button type="submit">Submit</button>
-  </form>
+    <!--FEELINGS-->
+          <label>How are you feeling?</label>
+            <div class="feelings-box">
+              <label class="feeling-select"> 
+                        <input type="radio" name="feeling" value="🤯 Overwhelmed" checked>
+                        <span class="select-desc">🤯 Overwhelmed</span>
+                    </label>
+                    <label class="feeling-select">
+                        <input type="radio" name="feeling" value="💡 Inspired">
+                        <span class="select-desc">💡 Inspired</span>
+                    </label>
+                    <label class="feeling-select">
+                        <input type="radio" name="feeling" value="😴 Tired">
+                        <span class="select-desc">😴 Tired</span>
+                    </label>
+                    <label class="feeling-select">
+                        <input type="radio" name="feeling" value="😊 Content">
+                        <span class="select-desc">😊 Content</span>
+                    </label>
+                    <label class="feeling-select">
+                        <input type="radio" name="feeling" value="🔥 Motivated">
+                        <span class="select-desc">🔥 Motivated</span>
+                    </label>
+                    <label class="feeling-select">
+                        <input type="radio" name="feeling" value="😐 Nuetral">
+                        <span class="select-desc">😐 Nuetral</span>
+                    </label>
+                </div>
+                <button type="submit" class="submit-button">Release Thought</button>
+              </form> 
+  </section>
+
+  <section class="brain-drain-">
+    <h3>Brain Drain</h3> 
+    <ul class="thoughts-list"> 
+      <% for (var i=0; i < thoughts.length; i++) {%>
+        <li class="thought-box" data-id="<%=thoughts[i]._id %>">
+          <div class="thought-header"> 
+            <strong><%= thoughts[i].date %></strong>
+            <span class="feeling-select"><%= thoughts[i].feeling %></span>
+          </div>
+
+          <p><%= thoughts[i].thought %></p>
+        </li>
+      <% } %> 
+    </ul>
+  </section>
+
 
   <script src="main.js"></script>
 
 </body>
-</html>
+</html> 
