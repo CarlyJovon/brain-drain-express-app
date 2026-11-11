@@ -8,13 +8,15 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>🧠Brain Drain🧠</h1>
-  <h2>Your Mind, No Filter.</h2>
-  <p>Drop your thoughts, free up some space.</p>
+  <section class="header">
+    <h1>🧠 BRAIN DRAIN</h1>
+    <h2>Your Mind, No Filter.</h2>
+    <h2>Release your thoughts and free up some space.</h2>
+  </section>
 
   <!--CREATE FORM-->
   <section class="form-section"> 
-    <h3>Drop a Thought</h3> 
+    <h3>What's on your mind?</h3> 
       <form action="/thoughts" method="POST">
 
   <!--DATE INPUT-->
@@ -64,11 +66,20 @@
       <% for (var i=0; i < thoughts.length; i++) {%>
         <li class="thought-box" data-id="<%=thoughts[i]._id %>">
           <div class="thought-header"> 
-            <strong><%= thoughts[i].date %></strong>
+            <div class="thought-date">
+              <strong>Date:</strong> 
+            <span><%= thoughts[i].date %></span>
+            </div>
+
+            <div class="thought-feeling">
+              <strong>Feeling:</strong>
             <span class="feeling-select"><%= thoughts[i].feeling %></span>
           </div>
 
-          <p><%= thoughts[i].thought %></p>
+          <div class="thought-content">
+            <strong>Thought:</strong>
+            <p><%= thoughts[i].thought %></p>
+          </div>
         </li>
       <% } %> 
     </ul>
